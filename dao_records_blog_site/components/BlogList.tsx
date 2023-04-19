@@ -1,6 +1,5 @@
 import Image from "next/image";
 import urlFor from "@/lib/urlFor";
-import category from "@/schemas/category";
 import { ArrowUpRightIcon } from "@heroicons/react/24/solid";
 import ClientSideRoute from "./ClientSideRoute";
 
@@ -8,15 +7,14 @@ type Props = {
   posts: Post[];
 };
 
-function BlogList({ posts }: Props) {
-  return (
+    export default function BlogList({ posts }: Props) {
+     return (
     <div>
       <hr className=" border-[#FF7B7C] mb-10" />
 
       <div className="grid grid-cols-1 md:grid-cols-2 px-10 gap-10 gap-y-16 pb-24">
-        {/* Posts */}
         {posts.map((post) => (
-          <ClientSideRoute key={post._id} route={`/post/${post.slug.current}`}>
+          <ClientSideRoute route={`/post/${post.slug.current}`} key={post._id}>
             <div className=" flex flex-col group cursor-pointer">
               <div className="relative w-full h-80 drop-shadow-xl group-hover:scale-105 transition-transform duration-200 ease-out">
                 <Image
@@ -39,10 +37,12 @@ function BlogList({ posts }: Props) {
                   </div>
 
                   <div className="flex flex-col md:flex-row gap-y-2 md:gap-x-2 item-center">
-                    {post.categories &&
-                      post.categories.map((category) => (
-                        <div className="bg-[#FF7B7C] text-center text-black px-3 py-1 rounded-full text-sm font-semibold">
-                          <p>{category.title}</p>
+                      {post.categories && post.categories.map((category) => (
+                        <div 
+                        key={category._id}
+                        className="bg-[#FF7B7C] text-center text-black px-3 py-1 rounded-full text-sm font-semibold"
+                        >
+                          {category.title}
                         </div>
                       ))}
                   </div>
@@ -53,6 +53,7 @@ function BlogList({ posts }: Props) {
                 <p className="underline text-lg font-bold">{post.title}</p>
                 <p className="line-clamp-2 text-gray-500">post.description</p>
               </div>
+
               <p className="mt-5 font-bold flex items-center group-hover:underline">
                 Read Post
                 <ArrowUpRightIcon className="ml-2 h-4 w-4" />
@@ -65,4 +66,4 @@ function BlogList({ posts }: Props) {
   );
 }
 
-export default BlogList;
+

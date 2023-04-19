@@ -1,4 +1,5 @@
 import urlBuilder from "@sanity/image-url";
+import React from "react";
 import { client } from "./sanity.client";
 import ImageUrlBuilder from "@sanity/image-url";
 

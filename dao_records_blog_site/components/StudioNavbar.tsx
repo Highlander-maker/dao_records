@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
 
-function StudioNavbar(props: any) {
+function MyEnhancedNavbar(props: any) {
   return (
     <div>
       <div className="flex items-center justify-between p-5">
@@ -27,4 +27,4 @@ function StudioNavbar(props: any) {
   );
 }
 
-export default StudioNavbar;
+export default MyEnhancedNavbar;

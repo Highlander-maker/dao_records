@@ -1,31 +1,37 @@
+import { visionTool } from "@sanity/vision";
 import { defineConfig } from "sanity";
 import { deskTool } from "sanity/desk";
-import { visionTool } from "@sanity/vision";
-import { schemaTypes } from "./schemas";
-import { myTheme } from "./theme";
-import StudioNavbar from "./components/StudioNavbar";
 import Logo from "./components/Logo";
+import StudioNavbar from "./components/StudioNavbar";
+
+import { schemaTypes } from "./schemas";
 import { getDefaultDocumentNode } from "./structure";
+import { myTheme } from "./theme";
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET!;
 
 export default defineConfig({
-  basePath: "/studio",
-  name: "Juno_Communications_SubDao_Content_Studio",
-  title: "Juno Communications SubDao Content Studio",
+  basePath: "/studio", // <-- important that `basePath` matches the route you're mounting your studio from, it applies to both `/pages` and `/app`
+
   projectId,
   dataset,
+
   plugins: [
     deskTool({
       defaultDocumentNode: getDefaultDocumentNode,
     }),
     visionTool(),
   ],
+
   schema: {
     types: schemaTypes,
   },
-
+  icon: Logo,
+  logo: Logo,
+  subtitle: "Login to manage the Blog",
+  title: "Juno Comms Content Studio",
+  name: "Juno_Comms_Content_Studio",
   studio: {
     components: {
       logo: Logo,

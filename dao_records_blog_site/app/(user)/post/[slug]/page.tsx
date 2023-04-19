@@ -1,10 +1,9 @@
-import Image from "next/image";
-import urlFor from "@/lib/urlFor";
-import { client } from "../../../../lib/sanity.client";
 import { groq } from "next-sanity";
-import PortableText  from "react-portable-text";
-import { RichTextComponents } from "@/components/RichTextComponents";
-
+import Image from "next/image";
+import { client } from "../../../../lib/sanity.client";
+import urlFor from "../../../../lib/urlFor";
+import { PortableText } from "@portabletext/react";
+import { RichTextComponents } from "./RichTextComponents";
 
 type Props = {
   params: {
@@ -12,23 +11,37 @@ type Props = {
   };
 };
 
-async function Post({ params: { slug } }: Props) {
-  const query = groq`
-    * [_type=='post' && slug.current == $slug] [0]
-    {
-        ...,
-        author->,
-        categories[]->
-    }
-    `;
+export const revalidate = 60; // revalidate this page every 60 seconds
 
-  const post: Post = await client.fetch(query, { slug });
+export async function generateStaticParams() {
+  const query = groq`*[_type=='post']
+    {
+      slug
+    }`;
+
+  const slugs: Post[] = await client.fetch(query);
+  const slugRoutes = slugs.map((slug) => slug.slug.current);
+
+  return slugRoutes.map((slug) => ({
+    slug,
+  }));
+}
+
+async function Post({ params: { slug } }: Props) {
+  const query = groq`*[_type=='post' && slug.current == $slug][0]
+    {
+      ...,
+      author->,
+      categories[]->
+    }`;
+
+  const post: Post = await client.fetch(query, { slug: slug });
 
   return (
     <article className="px-10 pb-28">
-      <section className="space-y-2 border border-[#FF7B7C] text-white">
+      <section className="space-y-2 border border-[#F7AB0A] text-white">
         <div className="relative min-h-56 flex flex-col md:flex-row justify-between">
-          <div className="asbsolute top-0 w-full h-full opacity-10 blur-sm p-10">
+          <div className="absolute top-0 w-full h-full opacity-10 blur-sm p-10">
             <Image
               className="object-cover object-center mx-auto"
               src={urlFor(post.mainImage).url()}
@@ -36,10 +49,11 @@ async function Post({ params: { slug } }: Props) {
               fill
             />
           </div>
-          <section className="p-5 bg-[#FF7B7C] w-full">
+
+          <section className="p-5 bg-[#F7AB0A] w-full">
             <div className="flex flex-col md:flex-row justify-between gap-y-5">
               <div>
-                <h1 className="text-4xl font-extrabol">{post.title}</h1>
+                <h1 className="text-4xl font-extrabold">{post.title}</h1>
                 <p>
                   {new Date(post._createdAt).toLocaleDateString("en-US", {
                     day: "numeric",
@@ -59,21 +73,26 @@ async function Post({ params: { slug } }: Props) {
 
                 <div className="w-64">
                   <h3 className="text-lg font-bold">{post.author.name}</h3>
-                  <div>{/* TODO Author BIO */}</div>
+                  <div className="line-clamp-2 text-ellipsis text-xs text-white">
+                    <PortableText
+                      value={post.author.bio}
+                      components={RichTextComponents}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div>
+            <div className="">
               <h2 className="italic pt-10">{post.description}</h2>
               <div className="flex items-center justify-end mt-auto space-x-2">
-                {post.categories && post.categories.map((category) => (
-                    <p
+                {post && post.categories && post.categories.map((category) => (
+                  <div
                     key={category._id}
-                      className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm font-semibold mt-4"
-                    >
-                      {category.title}
-                    </p> 
+                    className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm font-semibold mt-4"
+                  >
+                    {category.title}
+                  </div>
                 ))}
               </div>
             </div>
@@ -81,8 +100,7 @@ async function Post({ params: { slug } }: Props) {
         </div>
       </section>
 
-      <PortableText value={post.body} components ={RichTextComponents} />
-
+      <PortableText value={post.body} components={RichTextComponents} />
     </article>
   );
 }
