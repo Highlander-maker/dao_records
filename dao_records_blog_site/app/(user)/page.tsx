@@ -1,4 +1,4 @@
-import { previewData } from "next/headers";
+//import { previewData } from "next/headers";
 import PreviewSuspense from "../../components/PreviewSuspense";
 import BlogList from "../../components/BlogList";
 import PreviewBlogList from "../../components/PreviewBlogList";
@@ -15,7 +15,7 @@ const query = groq`*[_type=='post'] {
 `;
 
 export default async function IndexPage() {
-  if (previewData()) {
+  /* if (previewData()) {
     return (
       <PreviewSuspense
         fallback={
@@ -28,8 +28,8 @@ export default async function IndexPage() {
       >
         <PreviewBlogList query={query} />
       </PreviewSuspense>
-    );
-  }
+    ); 
+  }*/
 
   const posts = await client.fetch(query);
   return <BlogList posts={posts} />;

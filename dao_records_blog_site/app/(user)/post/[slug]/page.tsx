@@ -74,8 +74,11 @@ async function Post({ params: { slug } }: Props) {
                 <div className="w-64">
                   <h3 className="text-lg font-bold">{post.author.name}</h3>
                   <div className="line-clamp-2 text-ellipsis text-xs text-white">
+                    
                     <PortableText
-                     value={post.author.bio}
+                    /* 
+                    // @ts-ignore */
+                      value={post.author.bio}
                       components={RichTextComponents}
                     />
                   </div>
@@ -86,20 +89,23 @@ async function Post({ params: { slug } }: Props) {
             <div className="">
               <h2 className="italic pt-10">{post.description}</h2>
               <div className="flex items-center justify-end mt-auto space-x-2">
-                {post && post.categories && post.categories.map((category) => (
-                  <div
-                    key={category._id}
-                    className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm font-semibold mt-4"
-                  >
-                    {category.title}
-                  </div>
-                ))}
+                {post &&
+                  post.categories &&
+                  post.categories.map((category) => (
+                    <div
+                      key={category._id}
+                      className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm font-semibold mt-4"
+                    >
+                      {category.title}
+                    </div>
+                  ))}
               </div>
             </div>
           </section>
         </div>
       </section>
-
+                    {/* 
+        // @ts-ignore */}
       <PortableText value={post.body} components={RichTextComponents} />
     </article>
   );
